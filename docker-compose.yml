@@ -1,0 +1,59 @@
+services: 
+  
+  postgre:
+    image: postgres:12-alpine3.18
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=password
+  
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+  
+  nginx:
+    depends_on:
+      - api
+      - client
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    restart: always
+  
+  api:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGHOST=postgre
+      - PGDATABASE=postgres
+      - PGUSER=postgres
+      - PGPASSWORD=password
+      - PGPORT=5432
+
+  worker:
+    build: 
+      context: ./worker
+      dockerfile: Dockerfile
+    ports:
+      - '6000:6000'
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+
