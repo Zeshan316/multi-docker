@@ -4,22 +4,22 @@ services:
   - docker
 
 before_install:
-  - docker build -t zeshan/multi-docker-react -f ./client/Dockerfile.dev ./client
+  - docker build -t zeshan485/multi-docker-react -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true zeshan/multi-docker-react npm run test -- --coverage
+  - docker run -e CI=true zeshan485/multi-docker-react npm run test -- --coverage
 
 after_success:
-  - docker build -t zeshan/multi-docker-client ./client
-  - docker build -t zeshan/multi-docker-api ./server
-  - docker build -t zeshan/multi-docker-worker ./worker
-  - docker build -t zeshan/multi-docker-nginx ./nginx
+  - docker build -t zeshan485/multi-docker-client ./client
+  - docker build -t zeshan485/multi-docker-api ./server
+  - docker build -t zeshan485/multi-docker-worker ./worker
+  - docker build -t zeshan485/multi-docker-nginx ./nginx
   
   # Log in to travis ci with my docker credentials
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   
   # Push these images to docker hub
-  - docker push zeshan/multi-docker-client
-  - docker push zeshan/multi-docker-api
-  - docker push zeshan/multi-docker-worker
-  - docker push zeshan/multi-docker-nginx
+  - docker push zeshan485/multi-docker-client
+  - docker push zeshan485/multi-docker-api
+  - docker push zeshan485/multi-docker-worker
+  - docker push zeshan485/multi-docker-nginx
