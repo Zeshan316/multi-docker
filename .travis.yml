@@ -10,16 +10,16 @@ script:
   - docker run -e CI=true zeshan485/docker-react npm run test -- --coverage
 
 after_success:
-  - docker build -t Zeshan485/multi-docker-client ./client
-  - docker build -t Zeshan485/multi-docker-api ./server
-  - docker build -t Zeshan485/multi-docker-worker ./worker
-  - docker build -t Zeshan485/multi-docker-nginx ./nginx
+  - docker build -t zeshan485/multi-docker-client ./client
+  - docker build -t zeshan485/multi-docker-api ./server
+  - docker build -t zeshan485/multi-docker-worker ./worker
+  - docker build -t zeshan485/multi-docker-nginx ./nginx
   
   # Log in to travis ci with my docker credentials
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   
   # Push these images to docker hub
-  - docker push Zeshan485/multi-docker-client
-  - docker push Zeshan485/multi-docker-api
-  - docker push Zeshan485/multi-docker-worker
-  - docker push Zeshan485/multi-docker-nginx
+  - docker push zeshan485/multi-docker-client
+  - docker push zeshan485/multi-docker-api
+  - docker push zeshan485/multi-docker-worker
+  - docker push zeshan485/multi-docker-nginx
