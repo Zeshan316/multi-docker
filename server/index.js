@@ -33,6 +33,7 @@ function createPgPool() {
             console.log('Connected to PostgreSQL database');
             resolve(pgClient); // Resolve the promise once connected
         });
+        
     });
 }
 
@@ -40,6 +41,12 @@ function createPgPool() {
 async function initialize() {
     try {
         pgClient = await createPgPool();
+        
+        pgClient.on('connect', (client) => {
+          client
+            .query('CREATE TABLE IF NOT EXISTS values (number INT)')
+            .catch((err) => console.error(err));
+        });
         // Perform actions after connection is established
     } catch (err) {
         console.error('Error initializing PostgreSQL:', err);

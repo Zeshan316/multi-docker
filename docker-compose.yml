@@ -31,6 +31,4 @@ services:
     image: zeshan485/multi-docker-client
     mem_limit: 128m
     hostname: client
-    ports:
-      - '3000:3000'
 
