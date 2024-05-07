@@ -12,27 +12,49 @@ app.use(bodyParser.json());
 // Postgres Client Setup
 const { Pool } = require('pg');
 let pgClient;
-try{
 
-  console.log("creating connection....")
-  pgClient = new Pool({
-    user: keys.pgUser,
-    host: keys.pgHost,
-    database: keys.pgDatabase,
-    password: keys.pgPassword,
-    port: keys.pgPort,
-    ssl:{ rejectUnauthorized: false }
-  });
+function createPgPool() {
+    return new Promise((resolve, reject) => {
+        pgClient = new Pool({
+          user: keys.pgUser,
+          host: keys.pgHost,
+          database: keys.pgDatabase,
+          password: keys.pgPassword,
+          port: keys.pgPort,
+          ssl:{ rejectUnauthorized: false }
+        });
 
-  pgClient.on('connect', (client) => {
-    console.log("Postgres get connected...")
-    client
-      .query('CREATE TABLE IF NOT EXISTS values (number INT)')
-      .catch((err) => console.error("Postgres create table error: " + err?.message));
-  });
-}catch(err){
-  console.error("Postgres error: ", err)
+        pgClient.on('error', (err) => {
+            console.error('PostgreSQL connection error:', err);
+            reject(err); // Reject the promise if there's an error
+        });
+
+        pgClient.on('connect', () => {
+            console.log('Connected to PostgreSQL database');
+            resolve(pgClient); // Resolve the promise once connected
+        });
+    });
 }
+
+// Usage:
+async function initialize() {
+    try {
+        pgClient = await createPgPool();
+        // Perform actions after connection is established
+    } catch (err) {
+        console.error('Error initializing PostgreSQL:', err);
+    }
+}
+
+initialize();
+
+
+
+
+pgClient.on('connect', (client) => {
+  client
+    .query('CREATE TABLE IF NOT EXISTS values (number INT)')
+    .catch((err) => console.error("Postgres create table error: " + err?.message));
 // Redis Client Setup
 const redis = require('redis');
 const redisClient = redis.createClient({
