@@ -11,18 +11,18 @@ app.use(bodyParser.json());
 
 // Postgres Client Setup
 const { Pool } = require('pg');
-const pgClient = new Pool({
-  user: keys.pgUser,
-  host: keys.pgHost,
-  database: keys.pgDatabase,
-  password: keys.pgPassword,
-  port: keys.pgPort,
-  ssl:{ rejectUnauthorized: false }
-});
-
-console.log("keys----->", keys)
 
 try{
+
+  const pgClient = new Pool({
+    user: keys.pgUser,
+    host: keys.pgHost,
+    database: keys.pgDatabase,
+    password: keys.pgPassword,
+    port: keys.pgPort,
+    ssl:{ rejectUnauthorized: false }
+  });
+
   pgClient.on('connect', (client) => {
     console.log("Postgres get connected...")
     client
@@ -48,10 +48,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/values/all', async (req, res) => {
-  console.log("hello from /values/all")
+ try {
   const values = await pgClient.query('SELECT * from values');
 
   res.send(values.rows);
+ } catch (error) {
+  console.log("error", error)
+ }
+  
 });
 
 app.get('/values/current', async (req, res) => {
