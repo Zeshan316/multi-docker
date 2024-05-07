@@ -24,9 +24,10 @@ const pgClient = new Pool({
 });
 
 pgClient.on('connect', (client) => {
+  console.log("Postgres get connected...")
   client
     .query('CREATE TABLE IF NOT EXISTS values (number INT)')
-    .catch((err) => console.error(err));
+    .catch((err) => console.error("Postgres error: " + err?.message));
 });
 
 // Redis Client Setup
