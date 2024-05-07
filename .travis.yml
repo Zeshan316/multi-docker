@@ -23,3 +23,16 @@ after_success:
   - docker push zeshan485/multi-docker-api
   - docker push zeshan485/multi-docker-worker
   - docker push zeshan485/multi-docker-nginx
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'eu-north-1'
+  app: 'multi-docker'
+  env: Multi-docker-env
+  bucket_name: 'elasticbeanstalk-eu-north-1-381492104215'
+  bucket_path: multi-docker
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: 
+    secure: $AWS_SECRET_KEY

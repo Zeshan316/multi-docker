@@ -1,59 +1,36 @@
 services: 
   
-  postgre:
-    image: postgres:12-alpine3.18
-    restart: always
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_PASSWORD=password
-  
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - '6379:6379'
-  
   nginx:
-    depends_on:
-      - api
-      - client
-    build: 
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: zeshan485/multi-docker-nginx
+    mem_limit: 128m
+    hostname: nginx
     ports:
       - "80:80"
-    restart: always
-  
   api:
-    build: 
-      context: ./server
-      dockerfile: Dockerfile
-    ports:
-      - '5000:5000'
+    image: zeshan485/multi-docker-api
+    mem_limit: 128m
+    hostname: api
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - PGHOST=postgre
-      - PGDATABASE=postgres
-      - PGUSER=postgres
-      - PGPASSWORD=password
-      - PGPORT=5432
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - PGHOST=$PGHOST
+      - PGDATABASE=$PGDATABASE
+      - PGUSER=$PGUSER
+      - PGPASSWORD=$PGPASSWORD
+      - PGPORT=$PGPORT
 
   worker:
-    build: 
-      context: ./worker
-      dockerfile: Dockerfile
-    ports:
-      - '6000:6000'
+    image: zeshan485/multi-docker-worker
+    mem_limit: 128m
+    hostname: worker
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
 
   client:
-    build: 
-      context: ./client
-      dockerfile: Dockerfile
+    image: zeshan485/multi-docker-client
+    mem_limit: 128m
+    hostname: client
     ports:
       - '3000:3000'
 
