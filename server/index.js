@@ -48,13 +48,6 @@ async function initialize() {
 
 initialize();
 
-
-
-
-pgClient.on('connect', (client) => {
-  client
-    .query('CREATE TABLE IF NOT EXISTS values (number INT)')
-    .catch((err) => console.error("Postgres create table error: " + err?.message));
 // Redis Client Setup
 const redis = require('redis');
 const redisClient = redis.createClient({
