@@ -17,19 +17,21 @@ const pgClient = new Pool({
   database: keys.pgDatabase,
   password: keys.pgPassword,
   port: keys.pgPort,
-  ssl:
-    process.env.NODE_ENV !== 'production'
-      ? false
-      : { rejectUnauthorized: false },
+  ssl:{ rejectUnauthorized: false }
 });
 
-pgClient.on('connect', (client) => {
-  console.log("Postgres get connected...")
-  client
-    .query('CREATE TABLE IF NOT EXISTS values (number INT)')
-    .catch((err) => console.error("Postgres error: " + err?.message));
-});
+console.log("keys----->", keys)
 
+try{
+  pgClient.on('connect', (client) => {
+    console.log("Postgres get connected...")
+    client
+      .query('CREATE TABLE IF NOT EXISTS values (number INT)')
+      .catch((err) => console.error("Postgres create table error: " + err?.message));
+  });
+}catch(err){
+  console.error("Postgres error: ", err)
+}
 // Redis Client Setup
 const redis = require('redis');
 const redisClient = redis.createClient({
