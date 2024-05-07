@@ -63,6 +63,8 @@ app.get('/', (req, res) => {
   res.send('Hi');
 });
 
+console.log("postgres client", pgClient)
+
 app.get('/values/all', async (req, res) => {
  try {
   const values = await pgClient.query('SELECT * from values');
@@ -75,9 +77,13 @@ app.get('/values/all', async (req, res) => {
 });
 
 app.get('/values/current', async (req, res) => {
-  redisClient.hgetall('values', (err, values) => {
-    res.send(values);
-  });
+  try {
+    redisClient.hgetall('values', (err, values) => {
+      res.send(values);
+    });
+  } catch (error) {
+    console.log("Redis client error", error)
+  }
 });
 
 app.post('/values', async (req, res) => {
